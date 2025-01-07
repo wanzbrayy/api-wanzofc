@@ -110,16 +110,20 @@ app.get('/dashboard', (req, res) => {
 
 // Instagram API route - Requires API Key validation
 app.get('/instagram', (req, res) => {
+  console.log('Request received:', req.query); // Logging query parameters
   const apiKey = req.query.apiKey;
 
   if (!apiKey) {
+    console.log('Error: Missing API Key');
     return res.status(400).json({ error: 'Missing API key' });
   }
 
   if (apiKey !== 'wanzofc') {
+    console.log('Error: Invalid API Key');
     return res.status(403).json({ error: 'Invalid API key' });
   }
 
+  console.log('Access granted for Instagram API');
   res.json({
     message: 'Access granted',
     apikey: 'wanzofc',
@@ -128,16 +132,20 @@ app.get('/instagram', (req, res) => {
 
 // YouTube API route - Requires API Key validation
 app.get('/youtube', (req, res) => {
+  console.log('Request received:', req.query);
   const apiKey = req.query.apiKey;
 
   if (!apiKey) {
+    console.log('Error: Missing API Key');
     return res.status(400).json({ error: 'Missing API key' });
   }
 
   if (apiKey !== 'wanzofc') {
+    console.log('Error: Invalid API Key');
     return res.status(403).json({ error: 'Invalid API key' });
   }
 
+  console.log('Access granted for YouTube API');
   res.json({
     message: 'Access granted',
     apikey: 'wanzofc',
@@ -146,19 +154,31 @@ app.get('/youtube', (req, res) => {
 
 // TikTok API route - Requires API Key validation
 app.get('/tiktok', (req, res) => {
+  console.log('Request received:', req.query);
   const apiKey = req.query.apiKey;
 
   if (!apiKey) {
+    console.log('Error: Missing API Key');
     return res.status(400).json({ error: 'Missing API key' });
   }
 
   if (apiKey !== 'wanzofc') {
+    console.log('Error: Invalid API Key');
     return res.status(403).json({ error: 'Invalid API key' });
   }
 
+  console.log('Access granted for TikTok API');
   res.json({
     message: 'Access granted',
     apikey: 'wanzofc',
+  });
+});
+
+// Debugging Route
+app.get('/debug', (req, res) => {
+  console.log('Debugging Request:', req.query);
+  res.json({
+    receivedApiKey: req.query.apiKey || 'None',
   });
 });
 
