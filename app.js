@@ -16,6 +16,9 @@ app.use(express.static(__dirname));
 
 // Function to read users from the users.json file
 const getUsers = () => {
+  if (!fs.existsSync(path.join(__dirname, 'users.json'))) {
+    fs.writeFileSync(path.join(__dirname, 'users.json'), JSON.stringify([], null, 2), 'utf-8');
+  }
   const usersData = fs.readFileSync(path.join(__dirname, 'users.json'), 'utf-8');
   return JSON.parse(usersData);
 };
@@ -109,17 +112,14 @@ app.get('/dashboard', (req, res) => {
 app.get('/instagram', (req, res) => {
   const apiKey = req.query.apiKey;
 
-  // Check if apiKey exists
   if (!apiKey) {
     return res.status(400).json({ error: 'Missing API key' });
   }
 
-  // Validate the API key
   if (apiKey !== 'wanzofc') {
     return res.status(403).json({ error: 'Invalid API key' });
   }
 
-  // Return Instagram API key if valid
   res.json({
     message: 'Access granted',
     apikey: 'wanzofc',
@@ -130,17 +130,14 @@ app.get('/instagram', (req, res) => {
 app.get('/youtube', (req, res) => {
   const apiKey = req.query.apiKey;
 
-  // Check if apiKey exists
   if (!apiKey) {
     return res.status(400).json({ error: 'Missing API key' });
   }
 
-  // Validate the API key
   if (apiKey !== 'wanzofc') {
     return res.status(403).json({ error: 'Invalid API key' });
   }
 
-  // Return YouTube API key if valid
   res.json({
     message: 'Access granted',
     apikey: 'wanzofc',
@@ -151,17 +148,14 @@ app.get('/youtube', (req, res) => {
 app.get('/tiktok', (req, res) => {
   const apiKey = req.query.apiKey;
 
-  // Check if apiKey exists
   if (!apiKey) {
     return res.status(400).json({ error: 'Missing API key' });
   }
 
-  // Validate the API key
   if (apiKey !== 'wanzofc') {
     return res.status(403).json({ error: 'Invalid API key' });
   }
 
-  // Return TikTok API key if valid
   res.json({
     message: 'Access granted',
     apikey: 'wanzofc',
