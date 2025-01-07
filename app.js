@@ -83,7 +83,7 @@ app.post('/signin', async (req, res) => {
   }
 
   // Generate a JWT token
-  const token = jwt.sign({ userId: user.email }, 'your-secret-key', { expiresIn: '1h' });
+  const token = jwt.sign({ userId: user.email }, 'free-apikey', { expiresIn: '1h' });
 
   // Redirect to dashboard after login with token
   res.redirect(`/dashboard?token=${token}`);
@@ -98,7 +98,7 @@ app.get('/dashboard', (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(token, 'your-secret-key');
+    const decoded = jwt.verify(token, 'free-apikey');
     res.sendFile(path.join(__dirname, 'dashboard.html'));
   } catch (err) {
     res.status(400).json({ error: 'Invalid token' });
@@ -109,13 +109,13 @@ app.get('/dashboard', (req, res) => {
 app.get('/instagram', (req, res) => {
   const apiKey = req.query.apiKey;
 
-  if (apiKey !== 'INSTAGRAM_API_KEY_123') {
+  if (apiKey !== 'wanzofc') {
     return res.status(403).json({ error: 'Invalid or missing API key' });
   }
 
   // Return Instagram API key if valid
   res.json({
-    apikey: 'INSTAGRAM_API_KEY_123',
+    apikey: 'wanzofc',
   });
 });
 
@@ -123,13 +123,13 @@ app.get('/instagram', (req, res) => {
 app.get('/youtube', (req, res) => {
   const apiKey = req.query.apiKey;
 
-  if (apiKey !== 'YOUTUBE_API_KEY_123') {
+  if (apiKey !== 'wanzofc') {
     return res.status(403).json({ error: 'Invalid or missing API key' });
   }
 
   // Return YouTube API key if valid
   res.json({
-    apikey: 'YOUTUBE_API_KEY_123',
+    apikey: 'wanzofc',
   });
 });
 
@@ -143,7 +143,7 @@ app.get('/tiktok', (req, res) => {
 
   // Return TikTok API key if valid
   res.json({
-    apikey: 'TIKTOK_API_KEY_123',
+    apikey: 'wanzofc',
   });
 });
 
