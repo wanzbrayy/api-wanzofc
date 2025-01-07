@@ -3,6 +3,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
+const cors = require('cors'); // Tambahkan middleware CORS
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -10,89 +11,67 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors()); // Aktifkan middleware CORS
 
-// Static files (to serve HTML, CSS, JS files)
+// Static files (untuk HTML, CSS, JS)
 app.use(express.static(__dirname));
 
-// Function to read users from the users.json file
+// Fungsi untuk membaca data users dari file
 const getUsers = () => {
-  if (!fs.existsSync(path.join(__dirname, 'users.json'))) {
-    fs.writeFileSync(path.join(__dirname, 'users.json'), JSON.stringify([], null, 2), 'utf-8');
-  }
   const usersData = fs.readFileSync(path.join(__dirname, 'users.json'), 'utf-8');
   return JSON.parse(usersData);
 };
 
-// Function to write users to the users.json file
+// Fungsi untuk menyimpan data users ke file
 const saveUser = (users) => {
   fs.writeFileSync(path.join(__dirname, 'users.json'), JSON.stringify(users, null, 2), 'utf-8');
 };
 
-// Home route (renders login page)
+// Home route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Sign Up route (renders sign up page)
+// Sign Up route
 app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'signup.html'));
 });
 
-// Handle Sign Up (save user to users.json)
+// Handle Sign Up
 app.post('/signup', async (req, res) => {
   const { username, email, password } = req.body;
-
-  // Hash the password before saving it
   const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Get the current users from users.json
   const users = getUsers();
 
-  // Check if user already exists
   if (users.some(user => user.email === email)) {
     return res.status(400).json({ error: 'User with this email already exists' });
   }
 
-  // Save new user
   users.push({ username, email, password: hashedPassword });
   saveUser(users);
 
-  // Redirect to login after sign up
   res.redirect('/signup-success');
 });
 
-// Success page after sign up
 app.get('/signup-success', (req, res) => {
   res.send('<h1>Sign Up Successful! Please <a href="/">login</a> now.</h1>');
 });
 
-// Handle Sign In (check credentials, generate token)
+// Handle Sign In
 app.post('/signin', async (req, res) => {
   const { email, password } = req.body;
-
-  // Get users from users.json
   const users = getUsers();
-
-  // Find the user by email
   const user = users.find(u => u.email === email);
-  if (!user) {
+
+  if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(400).json({ error: 'Invalid email or password' });
   }
 
-  // Check if the password matches
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return res.status(400).json({ error: 'Invalid email or password' });
-  }
-
-  // Generate a JWT token
   const token = jwt.sign({ userId: user.email }, 'your-secret-key', { expiresIn: '1h' });
-
-  // Redirect to dashboard after login with token
   res.redirect(`/dashboard?token=${token}`);
 });
 
-// Dashboard route (protected, requires JWT token)
+// Dashboard route
 app.get('/dashboard', (req, res) => {
   const token = req.query.token;
 
@@ -101,88 +80,77 @@ app.get('/dashboard', (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(token, 'your-secret-key');
+    jwt.verify(token, 'your-secret-key');
     res.sendFile(path.join(__dirname, 'dashboard.html'));
   } catch (err) {
     res.status(400).json({ error: 'Invalid token' });
   }
 });
 
-// Instagram API route - Requires API Key validation
-app.get('/instagram', (req, res) => {
-  console.log('Request received:', req.query); // Logging query parameters
-  const apiKey = req.query.apiKey;
-
-  if (!apiKey) {
-    console.log('Error: Missing API Key');
-    return res.status(400).json({ error: 'Missing API key' });
-  }
-
-  if (apiKey !== 'wanzofc') {
-    console.log('Error: Invalid API Key');
-    return res.status(403).json({ error: 'Invalid API key' });
-  }
-
-  console.log('Access granted for Instagram API');
-  res.json({
-    message: 'Access granted',
-    apikey: 'wanzofc',
-  });
-});
-
-// YouTube API route - Requires API Key validation
-app.get('/youtube', (req, res) => {
-  console.log('Request received:', req.query);
-  const apiKey = req.query.apiKey;
-
-  if (!apiKey) {
-    console.log('Error: Missing API Key');
-    return res.status(400).json({ error: 'Missing API key' });
-  }
-
-  if (apiKey !== 'wanzofc') {
-    console.log('Error: Invalid API Key');
-    return res.status(403).json({ error: 'Invalid API key' });
-  }
-
-  console.log('Access granted for YouTube API');
-  res.json({
-    message: 'Access granted',
-    apikey: 'wanzofc',
-  });
-});
-
-// TikTok API route - Requires API Key validation
-app.get('/tiktok', (req, res) => {
-  console.log('Request received:', req.query);
-  const apiKey = req.query.apiKey;
-
-  if (!apiKey) {
-    console.log('Error: Missing API Key');
-    return res.status(400).json({ error: 'Missing API key' });
-  }
-
-  if (apiKey !== 'wanzofc') {
-    console.log('Error: Invalid API Key');
-    return res.status(403).json({ error: 'Invalid API key' });
-  }
-
-  console.log('Access granted for TikTok API');
-  res.json({
-    message: 'Access granted',
-    apikey: 'wanzofc',
-  });
-});
-
-// Debugging Route
+// Debug API untuk cek parameter yang diterima
 app.get('/debug', (req, res) => {
-  console.log('Debugging Request:', req.query);
+  console.log('Query Parameters:', req.query);
   res.json({
     receivedApiKey: req.query.apiKey || 'None',
   });
 });
 
-// Start the server
+// Instagram API route
+app.get('/instagram', (req, res) => {
+  const apiKey = req.query.apiKey;
+  console.log('Instagram API called with:', req.query);
+
+  if (!apiKey) {
+    return res.status(400).json({ error: 'Missing API key' });
+  }
+
+  if (apiKey !== 'wanzofc') {
+    return res.status(403).json({ error: 'Invalid API key' });
+  }
+
+  res.json({
+    message: 'Access granted',
+    apikey: 'wanzofc',
+  });
+});
+
+// YouTube API route
+app.get('/youtube', (req, res) => {
+  const apiKey = req.query.apiKey;
+
+  if (!apiKey) {
+    return res.status(400).json({ error: 'Missing API key' });
+  }
+
+  if (apiKey !== 'wanzofc') {
+    return res.status(403).json({ error: 'Invalid API key' });
+  }
+
+  res.json({
+    message: 'Access granted',
+    apikey: 'wanzofc',
+  });
+});
+
+// TikTok API route
+app.get('/tiktok', (req, res) => {
+  const apiKey = req.query.apiKey;
+
+  if (!apiKey) {
+    return res.status(400).json({ error: 'Missing API key' });
+  }
+
+  if (apiKey !== 'wanzofc') {
+    return res.status(403).json({ error: 'Invalid API key' });
+  }
+
+  res.json({
+    message: 'Access granted',
+    apikey: 'wanzofc',
+  });
+});
+
+// Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
