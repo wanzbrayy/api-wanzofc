@@ -1,4 +1,4 @@
-  const express = require('express');
+const express = require('express');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -102,26 +102,26 @@ function verifyToken(req, res, next) {
   }
 }
 
-// Route API (TikTok, Instagram, YouTube) Tanpa Validasi API Key
+// Route API (TikTok, Instagram, YouTube) dengan API Key 'wanzofc'
 app.get('/instagram', verifyToken, (req, res) => {
   res.json({
     platform: 'Instagram',
     message: 'Access granted to Instagram API for everyone.',
-    apikey: 'wanzofc'
+    apiKey: 'wanzofc'
   });
 });
 app.get('/youtube', verifyToken, (req, res) => {
   res.json({
     platform: 'YouTube',
     message: 'Access granted to YouTube API for everyone.',
-    apikey: 'wanzofc'
+    apiKey: 'wanzofc'
   });
 });
 app.get('/tiktok', verifyToken, (req, res) => {
   res.json({
     platform: 'TikTok',
     message: 'Access granted to TikTok API for everyone.',
-    apikey: 'wanzofc'
+    apiKey: 'wanzofc'
   });
 });
 
@@ -135,3 +135,4 @@ app.get('/debug', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+  
