@@ -1,140 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .sidebar {
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: -250px;
-            height: 100%;
-            background-color: #333;
-            color: white;
-            transition: 0.3s;
-            padding-top: 20px;
-            box-shadow: 4px 0 6px rgba(0, 0, 0, 0.2);
-        }
-        .sidebar a {
-            padding: 10px 15px;
-            text-decoration: none;
-            color: white;
-            display: block;
-        }
-        .sidebar a:hover {
-            background-color: #575757;
-        }
-        .sidebar .close-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 30px;
-            color: white;
-            cursor: pointer;
-        }
-        .open-btn {
-            font-size: 30px;
-            padding: 10px;
-            cursor: pointer;
-            color: #333;
-        }
-        .container {
-            margin-left: 30px;
-            padding: 20px;
-        }
-        input {
-            padding: 10px;
-            margin: 10px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            background-color: #28a745;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .logout {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background-color: #dc3545;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API WANZOFC</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <script
+    src="https://kit.fontawesome.com/64d58efce2.js"
+    crossorigin="anonymous"
+  ></script>
+  <style>
+    /* Sidebar styles */
+    .sidebar {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #111;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+    }
+
+    .sidebar a {
+      padding: 10px 15px;
+      text-decoration: none;
+      font-size: 18px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      color: #f1f1f1;
+    }
+
+    .sidebar .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
+
+    #main {
+      transition: margin-left 0.5s;
+      padding: 16px;
+    }
+
+    .open-sidebar-btn {
+      font-size: 20px;
+      cursor: pointer;
+      background-color: #111;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+    }
+  </style>
 </head>
 <body>
+  <!-- Sidebar -->
+  <div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeSidebar()">&times;</a>
+    <a href="/tiktok?apiKey=wanzofc" target="_blank">TikTok API</a>
+    <a href="/instagram?apiKey=wanzofc" target="_blank">Instagram API</a>
+    <a href="/youtube?apiKey=wanzofc" target="_blank">YouTube API</a>
+  </div>
 
-<div id="mySidebar" class="sidebar">
-    <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
-    <a href="#" onclick="redirectToApi('instagram')">Instagram API</a>
-    <a href="#" onclick="redirectToApi('youtube')">YouTube API</a>
-    <a href="#" onclick="redirectToApi('tiktok')">TikTok API</a>
-    <a href="javascript:void(0)" class="logout" onclick="logout()">Logout</a>
-</div>
-
-<span class="open-btn" onclick="openNav()">&#9776; Open Sidebar</span>
-
-<div class="container">
-    <h2>Welcome to Dashboard</h2>
-    <div id="tokenContainer" style="text-align: center;">
-        <input type="text" id="tokenInput" placeholder="Enter Token" readonly>
-        <button onclick="copyToken()">Copy Token</button>
+  <!-- Main Content -->
+  <div id="main">
+    <button class="open-sidebar-btn" onclick="openSidebar()">☰ Open Sidebar</button>
+    <div class="container">
+      <div class="forms-container">
+        <div class="signin-signup">
+          <form action="" class="sign-in-form">
+            <div class="social-media">
+              <a href="#" class="social-icon">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
-    function openNav() {
-        document.getElementById('mySidebar').style.left = '0';
+  <script>
+    function openSidebar() {
+      document.getElementById("mySidebar").style.width = "250px";
+      document.getElementById("main").style.marginLeft = "250px";
     }
 
-    function closeNav() {
-        document.getElementById('mySidebar').style.left = '-250px';
+    function closeSidebar() {
+      document.getElementById("mySidebar").style.width = "0";
+      document.getElementById("main").style.marginLeft = "0";
     }
-
-    function redirectToApi(feature) {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            alert('Token not found. Please log in again.');
-            logout();
-            return;
-        }
-
-        // Redirect to the specific API with the token
-        window.location.href = `/${feature}?apiKey=wanzofc&token=${token}`;
-    }
-
-    function copyToken() {
-        const tokenInput = document.getElementById('tokenInput');
-        tokenInput.select();
-        document.execCommand('copy');
-        alert('API Key copied to clipboard');
-    }
-
-    function logout() {
-        localStorage.removeItem('token');
-        window.location.href = 'index.html';
-    }
-
-    // Load token into input field (for display purposes)
-    const token = new URLSearchParams(window.location.search).get('token');
-    if (token) {
-        localStorage.setItem('token', token);
-        document.getElementById('tokenInput').value = token;
-    }
-</script>
-
+  </script>
+  <script src="app.js"></script>
 </body>
 </html>
