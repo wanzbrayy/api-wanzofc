@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API - WANZOFC</title>
+    <title>Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -79,9 +79,9 @@
 
 <div id="mySidebar" class="sidebar">
     <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
-    <a href="#" onclick="getApiKey('instagram')">Instagram API</a>
-    <a href="#" onclick="getApiKey('youtube')">YouTube API</a>
-    <a href="#" onclick="getApiKey('tiktok')">TikTok API</a>
+    <a href="#" onclick="redirectToApi('instagram')">Instagram API</a>
+    <a href="#" onclick="redirectToApi('youtube')">YouTube API</a>
+    <a href="#" onclick="redirectToApi('tiktok')">TikTok API</a>
     <a href="javascript:void(0)" class="logout" onclick="logout()">Logout</a>
 </div>
 
@@ -90,8 +90,8 @@
 <div class="container">
     <h2>Welcome to Dashboard</h2>
     <div id="tokenContainer" style="text-align: center;">
-        <input type="text" id="tokenInput" placeholder="API Key" readonly>
-        <button onclick="copyToken()">Copy API Key</button>
+        <input type="text" id="tokenInput" placeholder="Enter Token" readonly>
+        <button onclick="copyToken()">Copy Token</button>
     </div>
 </div>
 
@@ -104,27 +104,16 @@
         document.getElementById('mySidebar').style.left = '-250px';
     }
 
-    async function getApiKey(feature) {
-        const token = localStorage.getItem('token'); // Ambil token dari localStorage
+    function redirectToApi(feature) {
+        const token = localStorage.getItem('token');
         if (!token) {
-            alert('Token missing. Please log in again.');
-            window.location.href = '/';
+            alert('Token not found. Please log in again.');
+            logout();
             return;
         }
 
-        try {
-            const res = await fetch(`/${feature}?apiKey=${token}`);
-            const data = await res.json();
-
-            if (res.status === 200) {
-                document.getElementById('tokenInput').value = data.apikey;
-            } else {
-                alert(data.error || 'Failed to fetch API Key.');
-            }
-        } catch (error) {
-            console.error('Error fetching API key:', error);
-            alert('An error occurred. Please try again later.');
-        }
+        // Redirect to the specific API with the token
+        window.location.href = `/${feature}?apiKey=wanzofc&token=${token}`;
     }
 
     function copyToken() {
@@ -136,10 +125,16 @@
 
     function logout() {
         localStorage.removeItem('token');
-        window.location.href = '/';
+        window.location.href = 'index.html';
+    }
+
+    // Load token into input field (for display purposes)
+    const token = new URLSearchParams(window.location.search).get('token');
+    if (token) {
+        localStorage.setItem('token', token);
+        document.getElementById('tokenInput').value = token;
     }
 </script>
 
 </body>
 </html>
-
