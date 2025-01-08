@@ -3,7 +3,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
-const cors = require('cors'); // Middleware CORS
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors()); // Aktifkan CORS
+app.use(cors());
 
 // Fungsi membaca dan menyimpan data pengguna
 const getUsers = () => {
@@ -38,12 +38,10 @@ app.post('/signup', async (req, res) => {
   const { username, email, password } = req.body;
   const users = getUsers();
 
-  // Cek apakah email sudah terdaftar
   if (users.some(user => user.email === email)) {
     return res.status(400).json({ error: 'Email sudah terdaftar.' });
   }
 
-  // Simpan user baru
   const hashedPassword = await bcrypt.hash(password, 10);
   users.push({ username, email, password: hashedPassword });
   saveUser(users);
@@ -60,12 +58,10 @@ app.post('/signin', async (req, res) => {
   const users = getUsers();
   const user = users.find(u => u.email === email);
 
-  // Validasi email dan password
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(400).json({ error: 'Email atau password salah.' });
   }
 
-  // Buat token
   const token = jwt.sign({ userId: user.email }, 'wanz', { expiresIn: '1h' });
   res.redirect(`/dashboard?token=${token}`);
 });
@@ -79,7 +75,7 @@ app.get('/dashboard', (req, res) => {
   }
 
   try {
-    jwt.verify(token, 'wanz'); // Verifikasi token
+    jwt.verify(token, 'wanz');
     res.sendFile(path.join(__dirname, 'dashboard.html'));
   } catch (err) {
     res.status(400).send('<h1>Invalid token. Please log in again.</h1>');
@@ -95,33 +91,34 @@ function verifyToken(req, res, next) {
   }
 
   try {
-    jwt.verify(token, 'wanz');
+    const decoded = jwt.verify(token, 'wanz');
+    req.user = decoded;  // Simpan informasi pengguna di request
     next();
   } catch (err) {
     res.status(400).json({ error: 'Invalid token.' });
   }
 }
 
-// Route API (TikTok, Instagram, YouTube) dengan API Key 'wanzofc'
+// Route API (Instagram, TikTok, YouTube)
 app.get('/instagram', verifyToken, (req, res) => {
   res.json({
     platform: 'Instagram',
     message: 'Access granted to Instagram API for everyone.',
-    apiKey: 'wanzofc'
+    apikey: 'wanzofc'
   });
 });
 app.get('/youtube', verifyToken, (req, res) => {
   res.json({
     platform: 'YouTube',
     message: 'Access granted to YouTube API for everyone.',
-    apiKey: 'wanzofc'
+    apikey: 'wanzofc'
   });
 });
 app.get('/tiktok', verifyToken, (req, res) => {
   res.json({
     platform: 'TikTok',
     message: 'Access granted to TikTok API for everyone.',
-    apiKey: 'wanzofc'
+    apikey: 'wanzofc'
   });
 });
 
@@ -135,4 +132,4 @@ app.get('/debug', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-  
+        
