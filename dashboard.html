@@ -1,130 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API WANZOFC</title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
-  <script
-    src="https://kit.fontawesome.com/64d58efce2.js"
-    crossorigin="anonymous"
-  ></script>
-  <style>
-    /* Sidebar styles */
-    .sidebar {
-      height: 100%;
-      width: 0;
-      position: fixed;
-      z-index: 1;
-      top: 0;
-      left: 0;
-      background-color: #111;
-      overflow-x: hidden;
-      transition: 0.5s;
-      padding-top: 60px;
-    }
-
-    .sidebar a {
-      padding: 10px 15px;
-      text-decoration: none;
-      font-size: 18px;
-      color: #818181;
-      display: block;
-      transition: 0.3s;
-    }
-
-    .sidebar a:hover {
-      color: #f1f1f1;
-    }
-
-    .sidebar .closebtn {
-      position: absolute;
-      top: 0;
-      right: 25px;
-      font-size: 36px;
-      margin-left: 50px;
-    }
-
-    #main {
-      transition: margin-left 0.5s;
-      padding: 16px;
-    }
-
-    .open-sidebar-btn {
-      font-size: 20px;
-      cursor: pointer;
-      background-color: #111;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-    }
-  </style>
-</head>
-<body>
-  <!-- Sidebar -->
-  <div id="mySidebar" class="sidebar">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeSidebar()">&times;</a>
-    <a href="javascript:void(0)" onclick="redirectToApi('tiktok')">TikTok API</a>
-    <a href="javascript:void(0)" onclick="redirectToApi('instagram')">Instagram API</a>
-    <a href="javascript:void(0)" onclick="redirectToApi('youtube')">YouTube API</a>
-  </div>
-
-  <!-- Main Content -->
-  <div id="main">
-    <button class="open-sidebar-btn" onclick="openSidebar()">☰</button>
-    <div class="container">
-      <div class="forms-container">
-        <div class="signin-signup">
-          <form action="" class="sign-in-form">
-            <div class="social-media">
-              <a href="#" class="social-icon">
-                <i class="fab fa-facebook-f"></i>
-              </a>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div id="tokenDisplay" style="margin-top: 20px;">
-        <h3>token kamu:</h3>
-        <p id="tokenValue"></p>
-      </div>
-    </div>
-  </div>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
   <script>
-    function openSidebar() {
-      document.getElementById("mySidebar").style.width = "250px";
-      document.getElementById("main").style.marginLeft = "250px";
-    }
-
-    function closeSidebar() {
-      document.getElementById("mySidebar").style.width = "0";
-      document.getElementById("main").style.marginLeft = "0";
-    }
-
+    // Redirect ke API endpoint dengan token dan API key
     function redirectToApi(apiName) {
       const token = localStorage.getItem("token");
+      const apiKey = "wanzofc";
 
       if (!token) {
-        alert("Token not found. Please log in again.");
-        window.location.href = "/";
+        alert("Token tidak ditemukan!");
         return;
       }
 
-      window.open(`/${apiName}?apiKey=wanzofc&token=${token}`, "_blank");
+      window.open(`/${apiName}?apiKey=${apiKey}&token=${token}`, "_blank");
     }
 
+    // Simpan token ke localStorage
     window.onload = function () {
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get("token");
-
       if (token) {
         localStorage.setItem("token", token);
-        document.getElementById("tokenValue").textContent = token;
+        document.getElementById("tokenDisplay").textContent = token;
       }
     };
   </script>
-  <script src="app.js"></script>
+</head>
+<body>
+  <div class="navbar">
+    <h1>Dashboard API</h1>
+    <a href="/">Logout</a>
+  </div>
+
+  <div class="content">
+    <h2>Selamat Datang!</h2>
+    <div class="card">
+      <h3>Token Anda</h3>
+      <p id="tokenDisplay" class="token-box"></p>
+    </div>
+
+    <div class="card">
+      <h3>Fitur API</h3>
+      <button onclick="redirectToApi('tiktok')">TikTok API</button>
+      <button onclick="redirectToApi('instagram')">Instagram API</button>
+      <button onclick="redirectToApi('youtube')">YouTube API</button>
+    </div>
+  </div>
 </body>
 </html>
-
