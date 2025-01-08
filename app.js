@@ -80,7 +80,7 @@ app.get('/dashboard', (req, res) => {
   }
 
   try {
-    jwt.verify(token, 'your-secret-key');
+    jwt.verify(token, 'wanz'); // Sesuaikan secret key
     res.sendFile(path.join(__dirname, 'dashboard.html'));
   } catch (err) {
     res.status(400).json({ error: 'Invalid token' });
