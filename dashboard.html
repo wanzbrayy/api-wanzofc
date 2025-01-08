@@ -64,9 +64,9 @@
   <!-- Sidebar -->
   <div id="mySidebar" class="sidebar">
     <a href="javascript:void(0)" class="closebtn" onclick="closeSidebar()">&times;</a>
-    <a href="/tiktok?apiKey=wanzofc" target="_blank">TikTok API</a>
-    <a href="/instagram?apiKey=wanzofc" target="_blank">Instagram API</a>
-    <a href="/youtube?apiKey=wanzofc" target="_blank">YouTube API</a>
+    <a href="javascript:void(0)" onclick="redirectToApi('tiktok')">TikTok API</a>
+    <a href="javascript:void(0)" onclick="redirectToApi('instagram')">Instagram API</a>
+    <a href="javascript:void(0)" onclick="redirectToApi('youtube')">YouTube API</a>
   </div>
 
   <!-- Main Content -->
@@ -80,6 +80,8 @@
               <a href="#" class="social-icon">
                 <i class="fab fa-facebook-f"></i>
               </a>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -95,6 +97,31 @@
       document.getElementById("mySidebar").style.width = "0";
       document.getElementById("main").style.marginLeft = "0";
     }
+
+    function redirectToApi(apiName) {
+      // Ambil token dari localStorage
+      const token = localStorage.getItem("token");
+
+      // Jika token tidak ditemukan, arahkan pengguna ke login
+      if (!token) {
+        alert("Token not found. Please log in again.");
+        window.location.href = "/";
+        return;
+      }
+
+      // Redirect ke API endpoint dengan token
+      window.open(`/${apiName}?apiKey=wanzofc&token=${token}`, "_blank");
+    }
+
+    // Simpan token dari URL ke localStorage saat halaman dashboard dimuat
+    window.onload = function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get("token");
+
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+    };
   </script>
   <script src="app.js"></script>
 </body>
