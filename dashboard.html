@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>API WANZOFC</title>
   <link rel="stylesheet" type="text/css" href="style.css" />
-  <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+  <script
+    src="https://kit.fontawesome.com/64d58efce2.js"
+    crossorigin="anonymous"
+  ></script>
   <style>
     /* Sidebar styles */
     .sidebar {
@@ -55,12 +58,6 @@
       border: none;
       padding: 10px 15px;
     }
-
-    .token-display {
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
@@ -87,10 +84,11 @@
           </form>
         </div>
       </div>
+      <div id="tokenDisplay" style="margin-top: 20px;">
+        <h3>token kamu:</h3>
+        <p id="tokenValue"></p>
+      </div>
     </div>
-
-    <!-- Display JWT Token -->
-    <div class="token-display" id="tokenDisplay"></div>
   </div>
 
   <script>
@@ -105,31 +103,28 @@
     }
 
     function redirectToApi(apiName) {
-      // Ambil token dari localStorage
       const token = localStorage.getItem("token");
 
-      // Jika token tidak ditemukan, arahkan pengguna ke login
       if (!token) {
         alert("Token not found. Please log in again.");
         window.location.href = "/";
         return;
       }
 
-      // Redirect ke API endpoint dengan token
       window.open(`/${apiName}?apiKey=wanzofc&token=${token}`, "_blank");
     }
 
-    // Simpan token dari URL ke localStorage saat halaman dashboard dimuat
     window.onload = function () {
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get("token");
 
       if (token) {
         localStorage.setItem("token", token);
-        document.getElementById('tokenDisplay').textContent = `Your JWT Token: ${token}`;
+        document.getElementById("tokenValue").textContent = token;
       }
     };
   </script>
   <script src="app.js"></script>
 </body>
 </html>
+
